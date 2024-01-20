@@ -16,20 +16,21 @@ import org.springframework.security.core.userdetails.UserDetails
 @AllArgsConstructor
 @Entity
 @Table(name="app_user")
-class User : UserDetails {
+class User(
     @Id
     @GeneratedValue
-    private val id: Int? = null
-    private val firstname: String? = null
-    private val lastname: String? = null
-    private val email: String? = null
-    private val password: String? = null
+    private val id: Int?,
+    private val firstname: String,
+    private val lastname: String,
+    private val email: String,
+    private val password: String,
     @Enumerated
-    private val role: Role? = null
+    private val role: Role,
+) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
 //        TODO("Not yet implemented")
-        return mutableListOf(SimpleGrantedAuthority(role?.name))
+        return mutableListOf(SimpleGrantedAuthority(role.name))
     }
 
     override fun getPassword(): String? {

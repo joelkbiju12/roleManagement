@@ -1,6 +1,5 @@
 package com.joelkbiju.roleManagement.config
 
-import com.joelkbiju.roleManagement.model.User
 import com.joelkbiju.roleManagement.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -31,17 +30,17 @@ public class ApplicationConfig(private val userRepository: UserRepository) {
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
+
     @Bean
     fun authenticationProvider(): AuthenticationProvider {
-        val authProvider : DaoAuthenticationProvider =  DaoAuthenticationProvider()
+        val authProvider: DaoAuthenticationProvider = DaoAuthenticationProvider()
         authProvider.setUserDetailsService(userDetailsService())
         authProvider.setPasswordEncoder(passwordEncoder())
         return authProvider
     }
 
     @Bean
-    fun authenticationManager( config: AuthenticationConfiguration): AuthenticationManager {
+    fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager {
         return config.authenticationManager
-
     }
 }

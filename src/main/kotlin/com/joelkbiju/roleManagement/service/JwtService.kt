@@ -6,8 +6,6 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsChecker
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import java.security.Key
 import java.util.*
@@ -19,18 +17,22 @@ class JwtService {
     @Value("\${application.security.jwt.secret-key}")
     private val secretKey: String? = null
 
-    fun generateToken(extraClaims: Map<String, Object>, userDetails: UserDetails ) : String {
+    fun generateToken(userDetails: UserDetails?): String {
+        return generateToken(mutableMapOf(), userDetails = userDetails)
+    }
+
+    fun generateToken(extraClaims: Map<String, Object> = mutableMapOf(), userDetails: UserDetails?): String {
         return Jwts.builder()
             .setClaims(extraClaims)
-            .setSubject(userDetails.username)
+            .setSubject(userDetails!!.username)
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + 1000*60))
-            .signWith(SignatureAlgorithm.HS256,getSignInKey())
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60))
+            .signWith(SignatureAlgorithm.HS256, getSignInKey())
             .compact()
     }
 
-    fun isTokenValid(token: String, userDetails: UserDetails ): Boolean {
-        val username : String = extractUsername(token)
+    fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
+        val username: String = extractUsername(token)
         return (username == userDetails.username) && !(isTokenExpired(token))
     }
 
